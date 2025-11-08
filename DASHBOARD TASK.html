@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donation Tracking Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 30%;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border-bottom: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    canvas {
+      margin-top: 30px;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Donation Tracking Dashboard</h1>
+
+  <div class="stats">
+    <div class="card">
+      <h2 id="total-donations">$0</h2>
+      <p>Total Donations</p>
+    </div>
+    <div class="card">
+      <h2 id="donor-count">0</h2>
+      <p>Number of Donors</p>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Donor Name</th>
+        <th>Amount ($)</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="donation-table"></tbody>
+  </table>
+
+  <canvas id="donationChart" width="400" height="200"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Dummy donation data
+    const donations = [
+      { name: "Alice", amount: 100, date: "2025-11-01" },
+      { name: "Bob", amount: 50, date: "2025-11-02" },
+      { name: "Charlie", amount: 75, date: "2025-11-03" },
+      { name: "Diana", amount: 120, date: "2025-11-04" },
+      { name: "Ethan", amount: 200, date: "2025-11-05" },
+    ];
+
+    // Calculate totals
+    const totalDonations = donations.reduce((sum, d) => sum + d.amount, 0);
+    const donorCount = donations.length;
+
+    // Update stats
+    document.getElementById("total-donations").textContent = `$${totalDonations}`;
+
+    document.getElementById("donor-count").textContent = donorCount;
+
+    // Populate table
+    const tableBody = document.getElementById("donation-table");
+    donations.forEach(d => {
+      const row = <tr><td>${d.name}</td><td>${d.amount}</td><td>${d.date}</td></tr>;
+      tableBody.insertAdjacentHTML("beforeend", row);
+    });
+
+    // Chart setup
+    const ctx = document.getElementById("donationChart").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: donations.map(d => d.date),
+        datasets: [{
+          label: "Donations ($)",
+          data: donations.map(d => d.amount),
+          backgroundColor: "#4CAF50",
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: true, text: "Donation Trends Over Time" }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
